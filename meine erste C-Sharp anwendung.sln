@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.9.34902.65
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "meine erste C-Sharp anwendung", "meine erste C-Sharp anwendung\meine erste C-Sharp anwendung.csproj", "{9D3F9288-9DEE-456C-86CC-203638A5DBD5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Car-Sale", "Car-Sale\Car-Sale.csproj", "{E100D9DA-7F9D-43F4-9A27-C6B1E6D8148B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarSales", "CarSales\CarSales.csproj", "{BB7E27B3-70AF-45D6-BE9F-B27CCDAB3C86}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9D3F9288-9DEE-456C-86CC-203638A5DBD5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9D3F9288-9DEE-456C-86CC-203638A5DBD5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9D3F9288-9DEE-456C-86CC-203638A5DBD5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9D3F9288-9DEE-456C-86CC-203638A5DBD5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E100D9DA-7F9D-43F4-9A27-C6B1E6D8148B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E100D9DA-7F9D-43F4-9A27-C6B1E6D8148B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E100D9DA-7F9D-43F4-9A27-C6B1E6D8148B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E100D9DA-7F9D-43F4-9A27-C6B1E6D8148B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BB7E27B3-70AF-45D6-BE9F-B27CCDAB3C86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BB7E27B3-70AF-45D6-BE9F-B27CCDAB3C86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BB7E27B3-70AF-45D6-BE9F-B27CCDAB3C86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BB7E27B3-70AF-45D6-BE9F-B27CCDAB3C86}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8C18A9C8-B7E8-4670-85C1-EA4A51F6DAA2}
+	EndGlobalSection
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 4
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = https://dev.azure.com/leanfm
+		SccLocalPath0 = .
+		SccProjectUniqueName1 = meine\u0020erste\u0020C-Sharp\u0020anwendung\\meine\u0020erste\u0020C-Sharp\u0020anwendung.csproj
+		SccProjectName1 = meine\u0020erste\u0020C-Sharp\u0020anwendung
+		SccLocalPath1 = meine\u0020erste\u0020C-Sharp\u0020anwendung
+		SccProjectUniqueName2 = Car-Sale\\Car-Sale.csproj
+		SccProjectName2 = Car-Sale
+		SccLocalPath2 = Car-Sale
+		SccProjectUniqueName3 = CarSales\\CarSales.csproj
+		SccProjectName3 = CarSales
+		SccLocalPath3 = CarSales
+	EndGlobalSection
+EndGlobal
