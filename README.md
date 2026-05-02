@@ -38,14 +38,20 @@ the dealership.
 
 ## Data storage
 
-All data lives in CSV files, read and written with CsvHelper:
+All data lives in CSV files inside the `CSV Files\` folder,
+located next to each project's executable (bin\Debug\CSV Files\).
+Files are read and written with CsvHelper.
 
-| File | Purpose |
-|---|---|
-| CarsList.csv | Master car inventory (all cars, sold and unsold) |
-| customersCars.csv | Cars submitted by customers for sale |
-| receipt.csv | Record of every confirmed purchase |
-| DeletedCarsList.csv | Archive of admin-deleted cars |
+| File                | Purpose                                      |
+|---------------------|----------------------------------------------|
+| CarsList.csv        | Master car inventory (all cars, sold/unsold) |
+| customersCars.csv   | Cars submitted by customers for sale         |
+| receipt.csv         | Record of every confirmed purchase           |
+| DeletedCarsList.csv | Archive of admin-deleted cars                |
+
+The app locates these files automatically using
+AppDomain.CurrentDomain.BaseDirectory — no hardcoded paths,
+works on any machine after cloning.
 
 ---
 
