@@ -45,10 +45,9 @@ namespace CarSales
     /// </summary>
     public partial class MainWindow : Window
     {
-        private List<CarWPF> list = new List<CarWPF>();
-        private string pathCarsListCSV = @".\CSharpFolder\meine_erste_C_Sharp_Anwendung\CarsList.csv";
-        private string pathReceiptCSV = @".\CSharpFolder\meine_erste_C_Sharp_Anwendung\receipt.csv";
-
+        private List<Car> list = new List<Car>();
+        private string pathCarsListCSV = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CSV Files", "CarsList.csv");
+        private string pathReceiptCSV = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CSV Files", "receipt.csv");
 
         public MainWindow()
         {
@@ -75,7 +74,7 @@ namespace CarSales
             {
                 csv.Read();
                 csv.ReadHeader();
-                list = csv.GetRecords<CarWPF>().ToList();
+                list = csv.GetRecords<Car>().ToList();
             }
             MessageBoxResult result = MessageBox.Show("Wollen Sie die Liste Anschauen?", "Bestätigung", MessageBoxButton.YesNo);
 
@@ -85,7 +84,7 @@ namespace CarSales
                     using (var reader = new StreamReader(pathCarsListCSV))
                     using (var csv = new CsvReader(reader, CultureInfo.InvariantCulture))
                     {
-                        list = csv.GetRecords<CarWPF>().ToList();
+                        list = csv.GetRecords<Car>().ToList();
                     }
                 var availableCars = list.Where(car => car.IsSold == false).ToList();
 
@@ -98,7 +97,7 @@ namespace CarSales
             }
         public void buyCarClick(object sender, RoutedEventArgs e)
         {
-            CarWPF selectedCar = myListView.SelectedItem as CarWPF;
+            Car selectedCar = myListView.SelectedItem as Car;
 
             if (selectedCar == null)
             {
