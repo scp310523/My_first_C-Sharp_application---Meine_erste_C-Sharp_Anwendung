@@ -47,14 +47,13 @@ namespace CarSales
     {
         private List<CarWPF> list = new List<CarWPF>();
         private string pathCarsListCSV = @".\CSharpFolder\meine_erste_C_Sharp_Anwendung\CarsList.csv";
-        private static string pathReceiptCSV = @".\CSharpFolder\meine_erste_C_Sharp_Anwendung\receipt.csv";
+        private string pathReceiptCSV = @".\CSharpFolder\meine_erste_C_Sharp_Anwendung\receipt.csv";
 
 
         public MainWindow()
         {
             InitializeComponent();
             showTheListBTN.Content = "List laden";
-            InitializeComponent();
             buyCarBTN.Content = "Die Auto Kaufen";
         }
 
@@ -99,21 +98,42 @@ namespace CarSales
             }
         public void buyCarClick(object sender, RoutedEventArgs e)
         {
-            MessageBoxResult result = MessageBox.Show("Wollen Sie die Ausgewählte Auto Kaufen?", "Bestätigung", MessageBoxButton.YesNo);
+            CarWPF selectedCar = myListView.SelectedItem as CarWPF;
+
+            if (selectedCar == null)
+            {
+                MessageBox.Show("Bitte wählen Sie zuerst ein Auto aus der Liste aus.");
+                return;
+            }
+
+            MessageBoxResult result = MessageBox.Show(
+                $"Wollen Sie {selectedCar.Make} {selectedCar.Model} kaufen?",
+                "Bestätigung",
+                MessageBoxButton.YesNo);
 
             if (result == MessageBoxResult.Yes)
             {
-                MessageBox.Show("Sie haben erfolgreich die Auto gekauft!");
-                list[i].IsSold = true;
-                //soldCars.Add(cars[i]);
-                //selectedCar = cars[i];
-                //receipt.Add(selectedCar);
+                selectedCar.IsSold = true;
+
+                using (var writer = new StreamWriter(pathCarsListCSV))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                    csv.WriteRecords(list);
+
+                // ← this is what makes pathReceiptCSV "used"
+                using (var writer = new StreamWriter(pathReceiptCSV, append: true))
+                using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                {
+                    csv.WriteRecord(selectedCar);
+                    csv.NextRecord();
+                }
+
+                myListView.ItemsSource = list.Where(car => !car.IsSold).ToList();
+                MessageBox.Show($"Sie haben erfolgreich {selectedCar.Make} {selectedCar.Model} gekauft!");
             }
             else
             {
-                MessageBox.Show("Die Auto wurde nicht gekauft");
+                MessageBox.Show("Die Auto wurde nicht gekauft.");
             }
-
         }
 
 
