@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Car_Sale
+namespace CarSales
 {
     internal class Car
     {
@@ -18,16 +18,6 @@ namespace Car_Sale
         public bool IsSold { get; set; }
 
         public Car() { } // Required by CsvHelper
-
-        public Car(string make, string condition, string model, int age, int mileage, decimal price)
-        {
-            Make = make;
-            Condition = condition;
-            Model = model;
-            Age = age;
-            Mileage = mileage;
-            Price = price;
-        }
 
         public override string ToString()
         {

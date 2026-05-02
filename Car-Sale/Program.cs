@@ -27,13 +27,12 @@ namespace Car_Sale
     {
         private static List<Car> cars = new List<Car>();
         private static List<Car> customersCars = new List<Car>();
-        private static string pathCarsListCSV = @".\CSharpFolder\meine_erste_C_Sharp_Anwendung\CarsList.csv";
-        private static string pathCustomersCarsCSV = @".\CSharpFolder\meine_erste_C_Sharp_Anwendung\customersCars.csv";
-        private static string pathReceiptCSV = @".\CSharpFolder\meine_erste_C_Sharp_Anwendung\receipt.csv";
-        private static string pathDeletedCarsList = @".\CSharpFolder\meine_erste_C_Sharp_Anwendung\DeletedCarsList.csv";
-        private static string pathTemporalCarsListCSV = @".\CSharpFolder\meine_erste_C_Sharp_Anwendung\TemporalCarsList.csv";
-        private static string priceStr;
-
+        private static string baseDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "CSV Files");
+        private static string pathCarsListCSV = Path.Combine(baseDir, "CarsList.csv");
+        private static string pathCustomersCarsCSV = Path.Combine(baseDir, "customersCars.csv");
+        private static string pathReceiptCSV = Path.Combine(baseDir, "receipt.csv");
+        private static string pathDeletedCarsList = Path.Combine(baseDir, "DeletedCarsList.csv");
+        private static string pathTemporalCarsListCSV = Path.Combine(baseDir, "TemporalCarsList.csv");
         static void Main(string[] args1)
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
@@ -49,18 +48,12 @@ namespace Car_Sale
             int age = 2020;
             Int32 mileage = 3003;
             decimal price = 0;
-            //Decimal priceTotal = 0m;
             bool isSold = false;
-
-            int e = 0;
-            
 
             List<Car> receipt = new List<Car>();
             List<TradeType> tradeType = new List<TradeType>();
             tradeType.Add(new TradeType(1, "Brandneue Auto zu Kaufen"));
             tradeType.Add(new TradeType(2, "Ihr Auto zu verkaufen"));
-
-            //CSV Reader
 
             var config = new CsvConfiguration(CultureInfo.InvariantCulture)
             {
@@ -77,65 +70,37 @@ namespace Car_Sale
                 cars = csv.GetRecords<Car>().ToList<Car>();
             }
 
-
             do
             {
-                int maxId = cars.Max(car => car.ID);
-                Int32 idNext = ++maxId;
-                int id = idNext;
-                //Anfang
                 Console.WriteLine("\n\nWollen Sie ein Auto kaufen oder möchten Sie Ihr Auto verkaufen?\n");
-
-                //Wenn Kaufen
                 Console.WriteLine("Bitte drücken Sie:");
                 foreach (TradeType item in tradeType)
                     Console.WriteLine($"{item.ID} um {item.Name}");
                 Console.Write("\nNummer: ");
-                string userInputS = (Console.ReadLine());
+                string userInputS = Console.ReadLine();
                 int userInputInt;
-                bool isnumber1 = int.TryParse(userInputS, out userInputInt);
-                TradeType selectedTradeType = null;
+                int.TryParse(userInputS, out userInputInt);
 
-                foreach (TradeType item in tradeType)
-                {
-                    if (item.ID == userInputInt)
-                    {
-                        selectedTradeType = item;
-                        break;
-                    }
-
-                }
-
-
-                //Auto Kaufen
+                // Auto Kaufen
                 if (userInputInt == 1)
                 {
-
-                    //Autokatalog
                     Console.WriteLine("\n\nAutokatalog\n" +
                                       "Welche Auto wollen Sie denn kaufen?\n" +
                                       "Bitte drücken Sie:");
-                    //Katalog Ausgabe
                     List<Car> availableCars = cars.Where(car => car.IsSold == false).ToList();
                     foreach (Car item in availableCars)
-                    {
                         Console.WriteLine($"{item.ID} um {item.Make} {item.Model} " +
                                           $"für {item.Price.ToString("C", CultureInfo.CurrentCulture)}");
-                    }
                     Console.WriteLine("zu kaufen");
 
-                    //Personen Eingabe
                     Console.Write("Nummer: ");
-                    string customerInput = (Console.ReadLine());
+                    string customerInput = Console.ReadLine();
                     int customerInputInt;
-                    bool isCustomerInput = int.TryParse(customerInput, out customerInputInt);
+                    int.TryParse(customerInput, out customerInputInt);
                     Car selectedCar = null;
-
-                    // Liste Autos
                     List<Car> soldCars = new List<Car>();
 
                     for (int i = 0; i < cars.Count; i++)
-
                     {
                         if (customerInputInt == cars[i].ID && !cars[i].IsSold)
                         {
@@ -144,7 +109,7 @@ namespace Car_Sale
                             selectedCar = cars[i];
                             receipt.Add(selectedCar);
                             Console.WriteLine($"\nSie haben erfolgreich eine Brandneue Auto\n" +
-                                              $"Mit folgenden Eigenschaften:" +
+                                              $"Mit folgenden Eigenschaften:\n" +
                                               $"  Farbe: {cars[i].Color}\n" +
                                               $"  Modell: {cars[i].Model}\n" +
                                               $"  Türenanzahl - {cars[i].Doors}\n" +
@@ -156,56 +121,49 @@ namespace Car_Sale
                             break;
                         }
                     }
+
                     using (var writer = new StreamWriter(pathCarsListCSV))
                     using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-                    {
                         csv.WriteRecords(cars);
-                    }
                 }
 
-                //Auto Verkaufen
+                // Auto Verkaufen
                 else if (userInputInt == 2)
                 {
-                    Car car = cars[e];
-
-                    e++;
-
                     Console.WriteLine($"\n\nAutoverkauf\n");
                     Console.WriteLine("Welche Automarke ist Ihr Auto");
                     make = Console.ReadLine();
                     Console.WriteLine("\nIn welchem Zustand ist Ihr Auto");
                     condition = Console.ReadLine();
                     Console.WriteLine("\nWelches Baujahr ist Ihr Auto");
-                    age = Convert.ToInt32(Console.ReadLine());
-                    Console.WriteLine("\nWelche Modell hat Ihr Auto");
+                    while (!int.TryParse(Console.ReadLine(), out age))
+                        Console.Write("Bitte eine gültige Zahl eingeben: ");
+                    Console.WriteLine("\nWelches Modell hat Ihr Auto");
                     model = Console.ReadLine();
                     Console.WriteLine("\nWas ist die Laufleistung");
-                    mileage = Convert.ToInt32(Console.ReadLine());
+                    while (!int.TryParse(Console.ReadLine(), out mileage))
+                        Console.Write("Bitte eine gültige Zahl eingeben: ");
                     Console.WriteLine("\nFür wie viel Euro wollen Sie Ihr Auto verkaufen");
-                    price = Convert.ToDecimal(Console.ReadLine());
+                    while (!decimal.TryParse(Console.ReadLine(), out price))
+                        Console.Write("Bitte eine gültige Zahl eingeben: ");
                     Console.WriteLine($"\n\nIhr Auto mit folgenden Eigenschaften:\n" +
                                       $" Automarke: {make}\n" +
                                       $" Zustand: {condition}\n" +
-                                      $" Model: {model}\n" +
+                                      $" Modell: {model}\n" +
                                       $" Baujahr - {age}\n" +
                                       $" Laufleistung - {mileage}\n" +
                                       $"Wurde erfolgreich\n" +
-                                      $"für: {Convert.ToDecimal(price).ToString("C", CultureInfo.CurrentCulture)}\n" +
+                                      $"für: {price.ToString("C", CultureInfo.CurrentCulture)}\n" +
                                       $"Verkauft!");
-
-
 
                     AddNewCar(color, make, model, doors, minPs, maxPs, condition, age, mileage, price, isSold, pathCarsListCSV);
                 }
 
+                // Admin: Auto Bearbeiten
                 else if (userInputInt == 303)
                 {
-                    Car car = cars[e];
-                    e++;
-
                     Console.WriteLine("\n\nAdministratoreinstellungen\n");
                     Console.WriteLine($"Auto Bearbeiten\n");
-
 
                     using (StreamReader reader = new StreamReader(pathCarsListCSV))
                     using (CsvReader csv = new CsvReader(reader, config))
@@ -216,7 +174,6 @@ namespace Car_Sale
                     }
 
                     foreach (Car item in cars)
-                    {
                         Console.WriteLine($"Bitte drücken Sie:\n" +
                                           $" {item.ID} um " +
                                           $"{item.Color} {item.Make} {item.Model};\n" +
@@ -226,46 +183,29 @@ namespace Car_Sale
                                           $"Preis: {item.Price.ToString("C", CultureInfo.CurrentCulture)}\n" +
                                           $"Is Sold - {item.IsSold};\n" +
                                           $"zu ändern\n");
-                    }
 
-                    //Personen Eingabe
                     Console.Write("Nummer: ");
-                    string number = (Console.ReadLine());
                     int numberInt;
-                    bool isnumber = int.TryParse(number, out numberInt);
-
+                    int.TryParse(Console.ReadLine(), out numberInt);
 
                     for (int i = 0; i < cars.Count; i++)
                     {
                         if (numberInt == cars[i].ID)
                         {
-                            //string colorS, makeS, modelS;
-                            //decimal priceD;
-                            //int doorsI, mnPsI, mxPsI;
-                            CarEdit(numberInt, color, make, model, doors, minPs, maxPs, priceStr);
+                            CarEdit(numberInt);
                             Console.WriteLine($"\nErfolgreich aktualisiert!\n");
-                            Console.WriteLine($"Nummer - {cars[i].ID}, Farbe: {color},\n" +
-                                              $"Marke: {make}, Modell: {model},\n" +
-                                              $"Türenanzahl - {doors}, PS: {minPs.ToString("F2", CultureInfo.CurrentCulture)}/{maxPs.ToString("F2", CultureInfo.CurrentCulture) + " PS"}\n" +
-                                              $"Preis: {Convert.ToDecimal(price).ToString("C", CultureInfo.CurrentCulture)}");
                             break;
                         }
                     }
 
                     using (StreamWriter writer = new StreamWriter(pathCarsListCSV))
                     using (CsvWriter csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-                    {
                         csv.WriteRecords(cars);
-                    }
                 }
 
-
-
+                // Admin: Auto Hinzufügen
                 else if (userInputInt == 404)
                 {
-                    Car car = cars[e];
-                    e++;
-
                     Console.WriteLine("\n\nAdministratoreinstellungen\n");
                     Console.WriteLine($"Auto Hinzufügen\n");
 
@@ -276,44 +216,43 @@ namespace Car_Sale
                     Console.Write("Modell: ");
                     model = Console.ReadLine();
                     Console.Write("Türenanzahl eingeben - ");
-                    doors = int.Parse(Console.ReadLine());
+                    while (!int.TryParse(Console.ReadLine(), out doors))
+                        Console.Write("Bitte eine gültige Zahl eingeben: ");
                     Console.Write("Minimale Leistung - ");
-                    minPs = int.Parse(Console.ReadLine());
+                    while (!int.TryParse(Console.ReadLine(), out minPs))
+                        Console.Write("Bitte eine gültige Zahl eingeben: ");
                     Console.Write("Maximale Leistung - ");
-                    maxPs = int.Parse(Console.ReadLine());
+                    while (!int.TryParse(Console.ReadLine(), out maxPs))
+                        Console.Write("Bitte eine gültige Zahl eingeben: ");
                     Console.Write("Zustand: ");
                     condition = Console.ReadLine();
                     Console.Write("Gib bitte das Baujahr ein - ");
-                    age = int.Parse(Console.ReadLine());
-                    Console.Write("Laufleistung eigeben: ");
-                    mileage = int.Parse(Console.ReadLine());
+                    while (!int.TryParse(Console.ReadLine(), out age))
+                        Console.Write("Bitte eine gültige Zahl eingeben: ");
+                    Console.Write("Laufleistung eingeben: ");
+                    while (!int.TryParse(Console.ReadLine(), out mileage))
+                        Console.Write("Bitte eine gültige Zahl eingeben: ");
                     Console.Write("Neuer Preis: ");
-                    price = decimal.Parse(Console.ReadLine());
+                    while (!decimal.TryParse(Console.ReadLine(), out price))
+                        Console.Write("Bitte eine gültige Zahl eingeben: ");
                     Console.Write("Im Autokatalog anzeigen? (Ja/Nein): ");
                     string soldS = Console.ReadLine().ToLower();
-                    string soldStr = "Wird in Katalog nicht angezeigt";
-                    string NotSoldStr = "Wird in Katalog angezeigt";
                     if (soldS == "nein" || soldS == "no" || soldS == "ni" || soldS == "nö")
                     {
-                        Console.WriteLine($"\n\n{soldStr}\n\n");
                         isSold = true;
+                        Console.WriteLine("\n\nWird in Katalog nicht angezeigt\n\n");
                     }
                     else
                     {
                         isSold = false;
-                        Console.WriteLine($"\n{NotSoldStr}\n");
+                        Console.WriteLine("\nWird in Katalog angezeigt\n");
                     }
-                    Console.WriteLine($"Erfolgreich Hinzugefügt!\n              " +
-                                      $" Nummer - {cars[e].ID}; Farbe: {car.Color};\n" +
-                                      $"Marke: {cars[e].Make}; Modell: {cars[e].Model};\n" +
-                                      $"Türenanzahl - {cars[e].Doors}; PS: {cars[e].MinPS.ToString("F2", CultureInfo.CurrentCulture)}/{cars[e].MinPS.ToString("F2", CultureInfo.CurrentCulture) + " PS"}\n" +
-                                      $"Preis: {cars[e].Price.ToString("C", CultureInfo.CurrentCulture)}");
 
                     AddNewCar(color, make, model, doors, minPs, maxPs, condition, age, mileage, price, isSold, pathCarsListCSV);
+                    Console.WriteLine("Erfolgreich Hinzugefügt!");
                 }
 
-
-
+                // Admin: Auto Löschen
                 else if (userInputInt == 505)
                 {
                     using (StreamReader reader = new StreamReader(pathCarsListCSV))
@@ -325,7 +264,6 @@ namespace Car_Sale
                     }
 
                     foreach (Car item in cars)
-                    {
                         Console.WriteLine($"Bitte drücken Sie:\n" +
                                           $" {item.ID} um " +
                                           $"{item.Color} {item.Make} {item.Model};\n" +
@@ -335,16 +273,12 @@ namespace Car_Sale
                                           $"Preis: {item.Price.ToString("C", CultureInfo.CurrentCulture)}\n" +
                                           $"Is Sold - {item.IsSold};\n" +
                                           $"zu löschen\n");
-                    }
-                    //Personen Eingabe
+
                     Console.Write("Nummer: ");
-                    string number = (Console.ReadLine());
                     int numberInt;
-                    bool isnumber = int.TryParse(number, out numberInt);
+                    int.TryParse(Console.ReadLine(), out numberInt);
                     DeleteCar(numberInt);
                 }
-
-
 
                 Console.WriteLine("\n\nMöchten Sie vielleicht noch etwas?\n\n" +
                                   "Bitte drücken Sie:\n" +
@@ -358,15 +292,11 @@ namespace Car_Sale
 
             using (StreamWriter writer = new StreamWriter(pathCustomersCarsCSV))
             using (CsvWriter csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-            {
                 csv.WriteRecords(customersCars);
-            }
 
             using (StreamWriter writer = new StreamWriter(pathReceiptCSV))
             using (CsvWriter csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
-            {
                 csv.WriteRecords(receipt);
-            }
         }
 
         /// <summary>
@@ -380,64 +310,71 @@ namespace Car_Sale
         /// <param name="mnPsI"></param>
         /// <param name="mxPsI"></param>
         /// <param name="priceS"></param>
-        private static void CarEdit(int id, string colorS, string makeS, string modelS, int doorsI, int mnPsI, int mxPsI, string priceS)
+        private static void CarEdit(int id)
         {
-            Car EditedCar = cars.FirstOrDefault(car => car.ID == id);
+            Car editedCar = cars.FirstOrDefault(car => car.ID == id);
 
-
-            if (EditedCar != null) {
+            if (editedCar != null)
+            {
                 Console.Write("Neue Farbe: ");
-                colorS = (Console.ReadLine());
-                EditedCar.Color = colorS;
+                editedCar.Color = Console.ReadLine();
+
                 Console.Write("Neue Marke: ");
-                makeS = (Console.ReadLine());
-                EditedCar.Make = makeS;
+                editedCar.Make = Console.ReadLine();
+
                 Console.Write("Neues Modell: ");
-                modelS = (Console.ReadLine());
-                EditedCar.Model = modelS;
+                editedCar.Model = Console.ReadLine();
+
                 Console.Write("Türenanzahl - ");
-                string doorsS = (Console.ReadLine());
-                bool isDoors = int.TryParse(doorsS, out doorsI);
-                EditedCar.Doors = doorsI;
+                int doorsI;
+                while (!int.TryParse(Console.ReadLine(), out doorsI))
+                    Console.Write("Bitte eine gültige Zahl eingeben: ");
+                editedCar.Doors = doorsI;
+
                 Console.Write("Minimale Leistung - ");
-                string mnPsS = (Console.ReadLine());
-                bool isMnPs = int.TryParse(mnPsS, out mnPsI);
-                EditedCar.MinPS = mnPsI;
+                int mnPsI;
+                while (!int.TryParse(Console.ReadLine(), out mnPsI))
+                    Console.Write("Bitte eine gültige Zahl eingeben: ");
+                editedCar.MinPS = mnPsI;
+
                 Console.Write("Maximale Leistung - ");
-                string mxPsS = (Console.ReadLine());
-                bool isMxPs = int.TryParse(mxPsS, out mxPsI);
-                EditedCar.MaxPS = mxPsI;
+                int mxPsI;
+                while (!int.TryParse(Console.ReadLine(), out mxPsI))
+                    Console.Write("Bitte eine gültige Zahl eingeben: ");
+                editedCar.MaxPS = mxPsI;
+
                 Console.Write("Zustand eingeben: ");
-                EditedCar.Condition = (Console.ReadLine());
+                editedCar.Condition = Console.ReadLine();
+
                 Console.Write("Baujahr eingeben - ");
-                string ageS = (Console.ReadLine());
                 int ageI;
-                bool isAge = int.TryParse(ageS, out ageI);
-                EditedCar.Age = ageI;
+                while (!int.TryParse(Console.ReadLine(), out ageI))
+                    Console.Write("Bitte eine gültige Zahl eingeben: ");
+                editedCar.Age = ageI;
+
                 Console.Write("Kilometerstand - ");
-                string mileageS = (Console.ReadLine());
                 int mileageI;
-                bool isMileage = int.TryParse(mileageS, out mileageI);
-                EditedCar.Mileage = mileageI;
+                while (!int.TryParse(Console.ReadLine(), out mileageI))
+                    Console.Write("Bitte eine gültige Zahl eingeben: ");
+                editedCar.Mileage = mileageI;
+
                 Console.Write("Neuer Preis: ");
-                priceS = (Console.ReadLine());
                 decimal priceD;
-                bool isPrice = decimal.TryParse(priceS, out priceD);
-                EditedCar.Price = priceD;
+                while (!decimal.TryParse(Console.ReadLine(), out priceD))
+                    Console.Write("Bitte eine gültige Zahl eingeben: ");
+                editedCar.Price = priceD;
+
                 Console.Write("Im Autokatalog anzeigen? (Ja/Nein): ");
-                string soldS = (Console.ReadLine().ToLower());
-                string soldStr = "Wird in Katalog nicht angezeigt";
-                string NotSoldStr = "Wird in Katalog angezeigt";
+                string soldS = Console.ReadLine().ToLower();
                 if (soldS == "nein" || soldS == "no" || soldS == "ni" || soldS == "nö")
                 {
-
-                    EditedCar.IsSold = true;
-                    Console.WriteLine($"\n\n{soldStr}\n");
+                    editedCar.IsSold = true;
+                    Console.WriteLine("\n\nWird in Katalog nicht angezeigt\n");
                 }
                 else
                 {
-                    EditedCar.IsSold = false;
-                    Console.WriteLine($"\n{NotSoldStr}");
+                    editedCar.IsSold = false;
+                    Console.WriteLine("\nWird in Katalog angezeigt");
                 }
             }
         }
